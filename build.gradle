@@ -1,0 +1,71 @@
+group = 'com.gofrugal.connectplus'
+version = ''
+
+buildscript {
+	ext {
+		springBootVersion = '2.0.0.M7'
+	}
+	repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+	maven { url "https://repo.spring.io/snapshot" }
+	maven { url "https://repo.spring.io/milestone" }
+	maven { url 'http://gdev.gofrugal.com:7070/repository/layer_build' }
+}
+
+configurations.all {
+	exclude module: "spring-boot-starter-tomcat"
+	exclude module: "spring-boot-starter-jetty"
+	exclude module: "spring-boot-starter-logging"
+	exclude module: "junit4"
+}
+
+dependencies {
+	compile("org.springframework.boot:spring-boot-starter:${springBootVersion}") {
+		exclude module: "spring-boot-starter-tomcat"
+		exclude module: "spring-boot-starter-logging"
+	}
+	compile("org.springframework.boot:spring-boot-starter-data-jpa")
+
+	compile("org.springframework.boot:spring-boot-starter-undertow:${springBootVersion}")
+	compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}") {
+		exclude module: "spring-boot-starter-tomcat"
+		exclude module: "spring-boot-starter-logging"
+	}
+	compile("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}") {
+		exclude module: "spring-boot-starter-logging"
+	}
+	compile group: 'org.springframework', name: 'spring-jdbc', version: '5.0.2.RELEASE'
+
+	compile("org.projectlombok:lombok:1.18.2")
+	compile('org.postgresql:postgresql:9.4.1208')
+	compile("org.flywaydb:flyway-core:5.0.5")
+	compile("com.gofrugal.connectplus:gft-security:1.15.0")
+
+	testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+
+	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.2.0'
+	testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.2.0'
+	testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.2.0'
+	testCompile group: 'org.jmockit', name: 'jmockit', version: '1.8'
+}
+
+test {
+	useJUnitPlatform()
+}
